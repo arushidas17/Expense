@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Userprofile from  "./pages/Userprofile";
+import Transaction from "./pages/Transaction";
 function App() {
   return (
     <BrowserRouter>
@@ -13,7 +14,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/userprofile" element={<Userprofile />} />
-
+        <Route path="/transaction" element={<Transaction/>} />
       </Routes>
     </BrowserRouter>
   );
