@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function Signup() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-pink-100 flex items-center justify-center px-4">
 
@@ -68,11 +72,15 @@ function Signup() {
           >
             Sign Up
           </button>
+
         </form>
 
         <p className="text-center text-pink-500 mt-6">
           Already have an account?{" "}
-          <span className="text-pink-700 font-semibold cursor-pointer hover:underline">
+          <span
+            onClick={() => navigate("/login")}
+            className="text-pink-700 font-semibold cursor-pointer hover:underline"
+          >
             Log In
           </span>
         </p>

@@ -1,6 +1,9 @@
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 function Homepg() {
+  const navigate = useNavigate();
+
   return (
     <>
       <Navbar />
@@ -20,7 +23,10 @@ function Homepg() {
             and turn small savings into big possibilities.
           </p>
 
-          <button className="mt-10 px-8 py-4 bg-pink-500 text-white rounded-xl text-lg font-semibold hover:bg-pink-600 transition">
+          <button
+            onClick={() => navigate("/login")}
+            className="mt-10 px-8 py-4 bg-pink-500 text-white rounded-xl text-lg font-semibold hover:bg-pink-600 transition"
+          >
             Get Started
           </button>
 

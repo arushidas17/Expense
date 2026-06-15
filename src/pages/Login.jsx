@@ -1,8 +1,19 @@
+import { useNavigate } from "react-router-dom";
+
 function Login() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-pink-100 flex items-center justify-center px-4">
 
       <div className="bg-white rounded-3xl shadow-xl p-10 w-full max-w-md">
+
+        <button
+          onClick={() => navigate("/")}
+          className="mb-4 text-pink-600 hover:underline"
+        >
+          ← Back to Home
+        </button>
 
         <h1 className="text-4xl font-bold text-pink-700 text-center">
           Welcome Back
@@ -38,31 +49,14 @@ function Login() {
             />
           </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2 text-pink-600">
-              <input type="checkbox" />
-              Remember me
-            </label>
-
-            <a href="#" className="text-pink-700 font-medium hover:underline">
-              Forgot Password?
-            </a>
-          </div>
-
           <button
             type="submit"
             className="w-full bg-pink-500 text-white py-3 rounded-xl text-lg font-semibold hover:bg-pink-600 transition"
           >
             Log In
           </button>
-        </form>
 
-        <p className="text-center text-pink-500 mt-6">
-          Don’t have an account?{" "}
-          <span className="text-pink-700 font-semibold cursor-pointer hover:underline">
-            Sign Up
-          </span>
-        </p>
+        </form>
 
       </div>
     </div>
