@@ -1,7 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Navbarmain() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const tabs = [
     { label: "Dashboard", path: "/dashboard" },
@@ -15,7 +16,13 @@ export default function Navbarmain() {
           <h1 className="text-xl font-bold text-white tracking-tight">Expense Tracker</h1>
           <p className="text-xs text-pink-200 font-medium">Track every rupee</p>
         </div>
-        <div className="flex items-center gap-2 bg-white/15 hover:bg-white/25 transition-colors rounded-full px-3 py-1.5 cursor-pointer">
+
+        {/* Profile — clicking navigates to /userprofile */}
+        <button
+          onClick={() => navigate("/userprofile")}
+          className="flex items-center gap-2 bg-white/15 hover:bg-white/25 transition-colors rounded-full px-3 py-1.5 cursor-pointer"
+          aria-label="Go to profile"
+        >
           <div className="w-7 h-7 rounded-full bg-white/30 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -25,8 +32,9 @@ export default function Navbarmain() {
           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-pink-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
-        </div>
+        </button>
       </div>
+
       <div className="inline-flex bg-white/15 rounded-full p-1 gap-1">
         {tabs.map(tab => (
           <Link

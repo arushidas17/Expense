@@ -1,255 +1,156 @@
-
+import { useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  ReceiptText,
   User,
-  Settings,
   LogOut,
-  Pencil,
   Lock,
-  Moon,
   CircleHelp,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function Userprofile() {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex min-h-screen bg-[#fff8fb] text-gray-800">
-      
-      {/* Sidebar */}
-      <div className="w-72 border-r border-pink-100 bg-white p-7 flex flex-col justify-between">
-        
-        <div>
-          {/* Logo */}
-          <div className="mb-14">
-            <h1 className="text-3xl font-bold">
-              Expense{" "}
-              <span className="text-pink-500">Tracker</span>
-            </h1>
+    <div className="min-h-screen bg-pink-50 text-gray-800">
 
-            <p className="text-gray-400 mt-1">
-              Track every rupee
-            </p>
-          </div>
-
-          {/* Navigation */}
-          <div className="space-y-4">
-            
-            <button className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl hover:bg-pink-50 transition">
-              <LayoutDashboard size={22} />
-              <span className="text-lg">Dashboard</span>
-            </button>
-
-            <button className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl hover:bg-pink-50 transition">
-              <ReceiptText size={22} />
-              <span className="text-lg">Transactions</span>
-            </button>
-
-            <button className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl bg-pink-50 text-pink-500">
-              <User size={22} />
-              <span className="text-lg font-medium">Profile</span>
-            </button>
-
-            <button className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl hover:bg-pink-50 transition">
-              <Settings size={22} />
-              <span className="text-lg">Settings</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Logout */}
-        <button className="flex items-center gap-4 px-5 py-4 rounded-2xl text-pink-500 hover:bg-pink-50 transition">
-          <LogOut size={22} />
-          <span className="text-lg">Logout</span>
+      {/* Navbar */}
+      <div className="bg-white border-b border-pink-100 px-10 py-8 flex items-center gap-5">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="flex items-center justify-center w-10 h-10 rounded-full transition hover:bg-pink-50"
+          aria-label="Back to dashboard"
+        >
+          <ArrowLeft className="text-pink-500" size={22} />
         </button>
+        <h1 className="text-2xl font-bold">
+          <span className="text-pink-500">Expense Tracker</span>
+        </h1>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-10">
-        
+      <div className="p-10">
+
         {/* Top */}
-        <div className="flex justify-between items-center mb-10">
-          <div>
-            <h2 className="text-4xl font-bold">
-              Profile
-            </h2>
-
-            <p className="text-gray-400 mt-2">
-              Manage your account and preferences
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-pink-300 flex items-center justify-center text-white font-semibold">
-              A
-            </div>
-
-            <span className="font-medium text-lg">
-              Arushi Das
-            </span>
-          </div>
+        <div className="mb-10">
+          <h2 className="text-4xl font-bold">Profile</h2>
+          <p className="text-gray-400 mt-2">Manage your account and preferences</p>
         </div>
 
         {/* Profile Card */}
         <div className="bg-white border border-pink-100 rounded-3xl p-10 flex items-center gap-10 shadow-sm">
-          
           <div className="w-32 h-32 rounded-full bg-pink-100 flex items-center justify-center">
-            <User
-              size={60}
-              className="text-pink-400"
-            />
+            <User size={60} className="text-pink-400" />
           </div>
-
           <div>
-            <h3 className="text-3xl font-semibold">
-              Arushi Das
-            </h3>
+            <h3 className="text-3xl font-semibold">Arushi Das</h3>
+            <p className="text-gray-400 text-lg mt-2">arushi@gmail.com</p>
+          </div>
+        </div>
 
-            <p className="text-gray-400 text-lg mt-2">
-              arushi@gmail.com
-            </p>
-
-            <button className="mt-6 flex items-center gap-2 border border-pink-300 text-pink-500 px-6 py-3 rounded-2xl hover:bg-pink-50 transition">
-              <Pencil size={18} />
-              Edit Profile
-            </button>
+        {/* Personal Information */}
+        <div className="mt-10">
+          <h4 className="text-2xl font-semibold mb-5">Personal Information</h4>
+          <div className="bg-white border border-pink-100 rounded-3xl p-10 shadow-sm">
+            <div className="flex gap-6 mb-6">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-600 mb-2">First name</label>
+                <input
+                  type="text"
+                  defaultValue="Arushi"
+                  className="w-full px-4 py-3 rounded-2xl border border-pink-100 text-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 bg-white"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-600 mb-2">Last name</label>
+                <input
+                  type="text"
+                  defaultValue="Das"
+                  className="w-full px-4 py-3 rounded-2xl border border-pink-100 text-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 bg-white"
+                />
+              </div>
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-600 mb-2">Username</label>
+              <input
+                type="text"
+                defaultValue="arushidas"
+                className="w-full px-4 py-3 rounded-2xl border border-pink-100 text-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 bg-white"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-600 mb-2">Email address</label>
+              <input
+                type="email"
+                defaultValue="arushi@gmail.com"
+                className="w-full px-4 py-3 rounded-2xl border border-pink-100 text-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 bg-white"
+              />
+              <p className="text-sm text-gray-400 mt-2">Used to sign in and for account notifications.</p>
+            </div>
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-600 mb-2">Phone number</label>
+              <input
+                type="tel"
+                placeholder="Not added"
+                className="w-full px-4 py-3 rounded-2xl border border-pink-100 text-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 bg-white"
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button className="px-6 py-3 rounded-2xl border border-pink-100 text-gray-600 hover:bg-pink-50 transition">
+                Cancel
+              </button>
+              <button className="px-6 py-3 rounded-2xl bg-pink-500 text-white hover:bg-pink-600 transition">
+                Save changes
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Account Section */}
         <div className="mt-10">
-          <h4 className="text-2xl font-semibold mb-5">
-            Account
-          </h4>
-
+          <h4 className="text-2xl font-semibold mb-5">Account</h4>
           <div className="bg-white border border-pink-100 rounded-3xl overflow-hidden shadow-sm">
-            
-            <div className="flex justify-between items-center p-7 border-b border-pink-50">
-              <div className="flex items-center gap-5">
-                <div className="p-4 rounded-2xl bg-pink-50">
-                  <Pencil className="text-pink-500" />
-                </div>
-
-                <div>
-                  <h5 className="text-lg font-medium">
-                    Edit Profile
-                  </h5>
-
-                  <p className="text-gray-400">
-                    Update your details
-                  </p>
-                </div>
-              </div>
-
-              <span className="text-3xl text-gray-300">
-                ›
-              </span>
-            </div>
-
             <div className="flex justify-between items-center p-7">
               <div className="flex items-center gap-5">
                 <div className="p-4 rounded-2xl bg-pink-50">
                   <Lock className="text-pink-500" />
                 </div>
-
                 <div>
-                  <h5 className="text-lg font-medium">
-                    Change Password
-                  </h5>
-
-                  <p className="text-gray-400">
-                    Update your password
-                  </p>
+                  <h5 className="text-lg font-medium">Change Password</h5>
+                  <p className="text-gray-400">Update your password</p>
                 </div>
               </div>
-
-              <span className="text-3xl text-gray-300">
-                ›
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Preferences */}
-        <div className="mt-10">
-          <h4 className="text-2xl font-semibold mb-5">
-            Preferences
-          </h4>
-
-          <div className="bg-white border border-pink-100 rounded-3xl p-7 flex justify-between items-center shadow-sm">
-            
-            <div className="flex items-center gap-5">
-              <div className="p-4 rounded-2xl bg-pink-50">
-                <Moon className="text-pink-500" />
-              </div>
-
-              <div>
-                <h5 className="text-lg font-medium">
-                  Theme
-                </h5>
-
-                <p className="text-gray-400">
-                  Choose light or dark mode
-                </p>
-              </div>
-            </div>
-
-            {/* Toggle */}
-            <div className="w-16 h-9 bg-pink-500 rounded-full flex items-center px-1">
-              <div className="w-7 h-7 bg-white rounded-full ml-auto"></div>
+              <span className="text-3xl text-gray-300">›</span>
             </div>
           </div>
         </div>
 
         {/* Support */}
         <div className="mt-10">
-          <h4 className="text-2xl font-semibold mb-5">
-            Support
-          </h4>
-
+          <h4 className="text-2xl font-semibold mb-5">Support</h4>
           <div className="bg-white border border-pink-100 rounded-3xl overflow-hidden shadow-sm">
-            
             <div className="flex justify-between items-center p-7 border-b border-pink-50">
               <div className="flex items-center gap-5">
                 <div className="p-4 rounded-2xl bg-pink-50">
                   <CircleHelp className="text-pink-500" />
                 </div>
-
                 <div>
-                  <h5 className="text-lg font-medium">
-                    Help & Support
-                  </h5>
-
-                  <p className="text-gray-400">
-                    Contact support team
-                  </p>
+                  <h5 className="text-lg font-medium">Help & Support</h5>
+                  <p className="text-gray-400">Contact support team</p>
                 </div>
               </div>
-
-              <span className="text-3xl text-gray-300">
-                ›
-              </span>
+              <span className="text-3xl text-gray-300">›</span>
             </div>
-
             <div className="flex justify-between items-center p-7">
               <div className="flex items-center gap-5">
                 <div className="p-4 rounded-2xl bg-pink-50">
                   <LogOut className="text-pink-500" />
                 </div>
-
                 <div>
-                  <h5 className="text-lg font-medium text-pink-500">
-                    Logout
-                  </h5>
-
-                  <p className="text-gray-400">
-                    Sign out of your account
-                  </p>
+                  <h5 className="text-lg font-medium text-pink-500">Logout</h5>
+                  <p className="text-gray-400">Sign out of your account</p>
                 </div>
               </div>
-
-              <span className="text-3xl text-gray-300">
-                ›
-              </span>
+              <span className="text-3xl text-gray-300">›</span>
             </div>
           </div>
         </div>
@@ -258,4 +159,3 @@ export default function Userprofile() {
     </div>
   );
 }
-
