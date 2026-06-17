@@ -1,43 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbarmain from "../components/Navbarmain";
-import { CATEGORIES, INITIAL_TRANSACTIONS, formatDate, formatINR, getTodayDate } from "../constants";
+import { CATEGORIES, formatDate, formatINR, getTodayDate } from "../constants";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function Transactions() {
-  const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
+  const [transactions, setTransactions] = useState([]);  // ✅ empty now, loads from DB
   const [form, setForm]   = useState({ category: "Food", description: "", amount: "" });
   const [error, setError] = useState("");
   const [added, setAdded] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ new
+
+  // ✅ Fetch transactions from MongoDB on load
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get("/transactions");
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("Failed to fetch transactions", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const totalSpent = transactions.reduce((s, t) => s + Number(t.amount), 0);
 
   const categoryTotals = CATEGORIES.map(cat => ({
     ...cat,
-    total: transactions.filter(t => t.category === cat.name).reduce((s, t) => s + Number(t.amount), 0),
+    total: transactions
+      .filter(t => t.category === cat.name)
+      .reduce((s, t) => s + Number(t.amount), 0),
   })).sort((a, b) => b.total - a.total);
 
   const maxTotal = Math.max(...categoryTotals.map(c => c.total), 1);
 
-  function handleDelete(id) {
-    setTransactions(prev => prev.filter(t => t.id !== id));
+  // ✅ Delete from MongoDB
+  async function handleDelete(id) {
+    try {
+      await axiosInstance.delete(`/transactions/${id}`);
+      setTransactions(prev => prev.filter(t => t._id !== id)); // ✅ MongoDB uses _id
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
   }
 
-  function handleAdd() {
+  // ✅ Add to MongoDB
+  async function handleAdd() {
     if (!form.description.trim()) return setError("Add a description.");
-    if (!form.amount || isNaN(form.amount) || Number(form.amount) <= 0) return setError("Enter a valid amount.");
-    setTransactions(prev => [
-      { id: Date.now(), category: form.category, description: form.description.trim(), amount: Number(form.amount), date: getTodayDate() },
-      ...prev,
-    ]);
-    setForm({ category: "Food", description: "", amount: "" });
-    setError("");
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    if (!form.amount || isNaN(form.amount) || Number(form.amount) <= 0)
+      return setError("Enter a valid amount.");
+
+    try {
+      const res = await axiosInstance.post("/transactions", {
+        title: form.description.trim(),      // ✅ backend uses 'title'
+        description: form.description.trim(),
+        category: form.category,
+        amount: Number(form.amount),
+        type: "expense",                     // ✅ all are expense type here
+        date: getTodayDate(),
+      });
+      setTransactions(prev => [res.data, ...prev]); // ✅ add new one to top
+      setForm({ category: "Food", description: "", amount: "" });
+      setError("");
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    } catch (err) {
+      setError("Failed to add transaction. Try again.");
+      console.error(err);
+    }
+  }
+
+  // ✅ Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white font-sans">
+        <Navbarmain />
+        <div className="flex items-center justify-center h-[80vh]">
+          <p className="text-pink-400 font-semibold animate-pulse">Loading transactions...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-white font-sans">
       <Navbarmain />
-
       <div className="flex flex-col lg:flex-row min-h-[calc(100vh-97px)]">
 
         {/* LEFT: Transaction list */}
@@ -45,7 +96,9 @@ export default function Transactions() {
 
           {/* Spend Distribution */}
           <section className="mb-8">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-pink-400 mb-4">Spend Distribution</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-pink-400 mb-4">
+              Spend Distribution
+            </h2>
             <div className="bg-pink-50 rounded-2xl p-5 space-y-4">
               {categoryTotals.map(cat => {
                 const pct      = totalSpent > 0 ? Math.round((cat.total / totalSpent) * 100) : 0;
@@ -75,7 +128,10 @@ export default function Transactions() {
 
           {/* Category Sections */}
           {CATEGORIES.map(cat => {
-            const catTxns  = transactions.filter(t => t.category === cat.name).sort((a, b) => new Date(b.date) - new Date(a.date));
+            // ✅ MongoDB uses 'title' not 'description'
+            const catTxns  = transactions
+              .filter(t => t.category === cat.name)
+              .sort((a, b) => new Date(b.date) - new Date(a.date));
             if (catTxns.length === 0) return null;
             const catTotal = catTxns.reduce((s, t) => s + Number(t.amount), 0);
             return (
@@ -83,23 +139,35 @@ export default function Transactions() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{cat.icon}</span>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-gray-600">{cat.name}</h2>
+                    <h2 className="text-sm font-bold uppercase tracking-widest text-gray-600">
+                      {cat.name}
+                    </h2>
                   </div>
                   <span className="text-sm font-bold text-pink-500">{formatINR(catTotal)}</span>
                 </div>
                 <div className="space-y-2">
                   {catTxns.map(t => (
-                    <div key={t.id} className="flex items-center justify-between bg-white border border-pink-100 rounded-xl px-4 py-3 hover:shadow-sm hover:border-pink-200 transition-all">
+                    <div
+                      key={t._id}  // ✅ MongoDB uses _id
+                      className="flex items-center justify-between bg-white border border-pink-100 rounded-xl px-4 py-3 hover:shadow-sm hover:border-pink-200 transition-all"
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-base flex-shrink-0">{cat.icon}</div>
+                        <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-base flex-shrink-0">
+                          {cat.icon}
+                        </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-800">{t.description}</p>
+                          {/* ✅ MongoDB uses 'title' */}
+                          <p className="text-sm font-semibold text-gray-800">{t.title}</p>
                           <p className="text-xs text-gray-400 mt-0.5">{formatDate(t.date)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-bold text-rose-500">{formatINR(t.amount)}</span>
-                        <button onClick={() => handleDelete(t.id)} className="text-pink-300 hover:text-rose-500 transition-colors" aria-label="Delete">
+                        <button
+                          onClick={() => handleDelete(t._id)}  // ✅ MongoDB uses _id
+                          className="text-pink-300 hover:text-rose-500 transition-colors"
+                          aria-label="Delete"
+                        >
                           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
@@ -113,11 +181,10 @@ export default function Transactions() {
           })}
         </main>
 
-        {/* RIGHT: Add Transaction Panel */}
+        {/* RIGHT: Add Transaction Panel — SAME AS BEFORE, no changes needed */}
         <aside className="lg:w-80 w-full border-t lg:border-t-0 lg:border-l border-pink-100 bg-pink-50/60 p-6 flex flex-col">
           <h2 className="text-xs font-bold uppercase tracking-widest text-pink-400 mb-5">Add Transaction</h2>
           <div className="space-y-4 flex-1">
-
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1.5">Category</label>
               <div className="grid grid-cols-3 gap-2">
@@ -194,7 +261,6 @@ export default function Transactions() {
             )}
           </div>
         </aside>
-
       </div>
     </div>
   );
