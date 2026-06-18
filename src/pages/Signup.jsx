@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 
@@ -119,12 +119,12 @@ function Signup() {
 
         <p className="text-center text-pink-500 mt-6">
           Already have an account?{" "}
-          <span
-            onClick={() => navigate("/login")}
-            className="text-pink-700 font-semibold cursor-pointer hover:underline"
-          >
-            Log In
-          </span>
+   <Link
+  to="/login"
+  className="text-pink-700 font-semibold hover:underline"
+>
+  Log In
+</Link>
         </p>
       </div>
     </div>
